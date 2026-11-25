@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#064e3b">
+    <title>KrishiLedger Pro — Estate, Processing & Farm Accounting</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js for Profit & Expense Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Hide scrollbars on horizontal pill navigation while preserving touch scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .card-shadow {
+            box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.06), 0 1px 3px -1px rgba(15, 23, 42, 0.04);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col max-w-2xl mx-auto bg-slate-50 shadow-xl">
+
+    <!-- ====================================================
+         TOP STICKY HEADER
+    ==================================================== -->
+    <header class="sticky top-0 z-30 bg-emerald-950 text-white shadow-md">
+        <div class="px-4 pt-3 pb-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-emerald-600/30 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-seedling text-emerald-300 text-base"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="text-sm sm:text-base font-extrabold tracking-tight truncate">KrishiLedger Pro</h1>
+                        <span id="save-status-badge" class="text-[10px] font-bold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 px-2 py-0.5 rounded-full shrink-0">
+                            0 Saved
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-emerald-200/90 truncate">Coconut, Spices, Dairy, Rice & Fish Daily Ledger</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="openAllPagesDrawer()" class="px-2.5 py-2 rounded-xl bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 text-xs font-bold flex items-center gap-1.5 border border-emerald-700/60 transition">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>All (14)</span>
+                </button>
+                <button onclick="openAppLinkModal()" class="px-2.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 text-xs font-extrabold flex items-center gap-1 shadow-xs transition">
+                    <i class="fa-solid fa-link"></i>
+                    <span>App Link</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Horizontal Quick-Switch Navigation Bar -->
+        <nav id="top-nav-pills" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar px-3 pb-2.5 pt-0.5 text-xs font-semibold">
+            <!-- Dynamically populated by JS -->
+        </nav>
+    </header>
+
+    <!-- ====================================================
+         MAIN DYNAMIC VIEWPORT
+    ==================================================== -->
+    <main id="app-content" class="flex-1 p-3.5 sm:p-5 pb-24 space-y-4">
+        <!-- Active page content renders here -->
+    </main>
+
+    <!-- ====================================================
+         BOTTOM QUICK ACTION BAR (MOBILE THUMB-FRIENDLY)
+    ==================================================== -->
+    <footer class="fixed bottom-0 left-0 right-0 z-30 max-w-2xl mx-auto bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 flex items-center justify-around shadow-lg">
+        <button onclick="switchPage('dashboard')" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-slate-600 hover:text-emerald-700 text-[11px] font-bold">
+            <i class="fa-solid fa-chart-pie text-sm mb-0.5"></i>
+            <span>Overview</span>
+        </button>
+        <button onclick="switchPage('coco_buy')" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-slate-600 hover:text-emerald-700 text-[11px] font-bold">
+            <i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i>
+            <span>Coconut</span>
+        </button>
+        <button onclick="switchPage('overheads')" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-slate-600 hover:text-emerald-700 text-[11px] font-bold">
+            <i class="fa-solid fa-bolt text-sm mb-0.5"></i>
+            <span>Utilities</span>
+        </button>
+        <button onclick="openAllPagesDrawer()" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl bg-emerald-700 text-white text-[11px] font-extrabold shadow-xs">
+            <i class="fa-solid fa-layer-group text-sm mb-0.5"></i>
+            <span>All Pages</span>
+        </button>
+        <button onclick="quickDailyBackup()" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-slate-600 hover:text-emerald-700 text-[11px] font-bold">
+            <i class="fa-solid fa-cloud-arrow-up text-sm mb-0.5"></i>
+            <span>Backup</span>
+        </button>
+    </footer>
+
+    <!-- ====================================================
+         ALL PAGES DRAWER MODAL
+    ==================================================== -->
+    <div id="all-pages-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[88vh] overflow-y-auto shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900">All Business & Farm Pages</h2>
+                    <p class="text-xs text-slate-500">Tap any section to open its separate ledger & analytics</p>
+                </div>
+                <button onclick="closeModal('all-pages-modal')" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="all-pages-grid" class="grid grid-cols-2 gap-2.5">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         EDIT ENTRY MODAL
+    ==================================================== -->
+    <div id="edit-entry-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-pen-to-square text-emerald-600 mr-1.5"></i>Edit Recorded Entry</h2>
+                <button onclick="closeModal('edit-entry-modal')" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="edit-entry-form" onsubmit="saveEditedEntry(event)" class="space-y-3">
+                <input type="hidden" id="edit-id">
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                        <input type="date" id="edit-date" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Cash Flow</label>
+                        <select id="edit-flow" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold bg-white">
+                            <option value="expense">Expense / Buying (Out)</option>
+                            <option value="income">Sale / Income (In)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Category / Quality</label>
+                        <input type="text" id="edit-subtype" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Title / Description</label>
+                        <input type="text" id="edit-title" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Qty / Area</label>
+                        <input type="number" step="any" id="edit-qty" oninput="recalcEditTotal()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                        <input type="text" id="edit-unit" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate (₹)</label>
+                        <input type="number" step="any" id="edit-rate" oninput="recalcEditTotal()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Amount (₹)</label>
+                        <input type="number" step="any" id="edit-amount" required class="w-full rounded-xl border border-emerald-400 bg-emerald-50/50 px-3 py-2 text-sm font-extrabold text-emerald-950">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Party / Worker</label>
+                        <input type="text" id="edit-party" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Notes</label>
+                    <input type="text" id="edit-notes" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeModal('edit-entry-modal')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">Cancel</button>
+                    <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-sm">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         EDIT COW PROFILE MODAL
+    ==================================================== -->
+    <div id="edit-cow-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 class="text-base font-extrabold text-slate-900">Edit Cow Profile</h2>
+                <button onclick="closeModal('edit-cow-modal')" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="saveEditedCow(event)" class="space-y-3">
+                <input type="hidden" id="edit-cow-id">
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Cow Name / Tag</label>
+                        <input type="text" id="edit-cow-name" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Breed</label>
+                        <input type="text" id="edit-cow-breed" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Current Status</label>
+                        <select id="edit-cow-status" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold bg-white">
+                            <option value="Milking">Milking</option>
+                            <option value="Pregnant & Milking">Pregnant & Milking</option>
+                            <option value="Pregnant (Dry)">Pregnant (Dry)</option>
+                            <option value="Heifer / Dry">Heifer / Dry</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Avg Daily Milk (L)</label>
+                        <input type="number" step="any" id="edit-cow-yield" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Impregnate / AI Date</label>
+                        <input type="date" id="edit-cow-ai-date" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Milking Start Date</label>
+                        <input type="date" id="edit-cow-milk-start" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Notes</label>
+                    <input type="text" id="edit-cow-notes" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeModal('edit-cow-modal')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">Cancel</button>
+                    <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-700 text-white font-extrabold text-xs">Save Cow Details</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         APP LINK & DAILY BACKUP MODAL
+    ==================================================== -->
+    <div id="app-link-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900">Use Daily on Your Phone</h2>
+                    <p class="text-xs text-slate-500">Save to Home Screen & Keep Daily Backups Safe</p>
+                </div>
+                <button onclick="closeModal('app-link-modal')" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 space-y-2">
+                <span class="text-xs font-extrabold text-amber-900 block">1. Install as a 1-Tap Phone App or Web Link</span>
+                <p class="text-[11px] text-amber-800 leading-relaxed">
+                    Download the standalone HTML app file below, open it in <strong>Chrome (Android)</strong> or <strong>Safari (iPhone)</strong>, and tap <strong>"Add to Home Screen"</strong>. You can also upload this file to <strong>tiiny.host</strong> or <strong>Netlify Drop</strong> for a permanent <code>https://</code> link.
+                </p>
+                <button onclick="downloadStandaloneApp()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-emerald-950 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-xs">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Download Standalone App (KrishiLedger_Pro.html)
+                </button>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-800">2. Daily Data Safety & Backup</span>
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Auto-Saved</span>
+                </div>
+                <p class="text-[11px] text-slate-500">Every entry stays saved automatically in your phone browser. Share a backup file to WhatsApp or Google Drive anytime.</p>
+                <button onclick="quickDailyBackup()" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs">
+                    <i class="fa-solid fa-share-nodes"></i> Share / Save Daily Backup (<span id="modal-record-count">0</span> Records)
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportCSVReport()" class="py-2 rounded-xl bg-white border border-slate-300 text-slate-700 font-bold text-[11px] flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-file-excel text-emerald-600"></i> Export CSV
+                    </button>
+                    <label class="py-2 rounded-xl bg-white border border-slate-300 text-slate-700 font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer">
+                        <i class="fa-solid fa-upload text-blue-600"></i> Restore Backup
+                        <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2">
+                <span class="text-xs font-extrabold text-slate-800 block">3. Sample Data & Reset</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="loadSampleEstateData(); closeModal('app-link-modal');" class="py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-[11px]">
+                        + Load Sample Estate Data
+                    </button>
+                    <button onclick="requestClearAllData()" class="py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 font-bold text-[11px]">
+                        Clear All Data
+                    </button>
+                </div>
+                <div id="clear-confirm-box" class="hidden pt-2 border-t border-rose-100 flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-bold text-rose-700">Erase all entries & cows?</span>
+                    <div class="flex gap-1.5">
+                        <button onclick="document.getElementById('clear-confirm-box').classList.add('hidden')" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-bold">No</button>
+                        <button onclick="confirmClearAllData()" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-[11px] font-bold">Yes, Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         TOAST NOTIFICATION
+    ==================================================== -->
+    <div id="toast-box" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-xl flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-msg">Saved!</span>
+    </div>
+
+    <!-- ====================================================
+         APPLICATION LOGIC
+    ==================================================== -->
+    <script>
+        // ==========================================
+        // 1. MODULE DEFINITIONS (ALL 14 PAGES)
+        // ==========================================
+        const PAGES = [
+            { id: 'dashboard',  short: 'Home',         title: 'Master Dashboard',               icon: 'fa-chart-line',          group: 'Overview' },
+            { id: 'coco_buy',   short: 'Coco Buy',     title: '1. Coconut Buying',              icon: 'fa-cart-shopping',       group: 'Coconut' },
+            { id: 'coco_sell',  short: 'Coco Sell',    title: '2. Coconut Selling',             icon: 'fa-hand-holding-dollar', group: 'Coconut' },
+            { id: 'copra',      short: 'Copra',        title: '3. Copra Buy & Sell',            icon: 'fa-sun',                 group: 'Coconut' },
+            { id: 'oil',        short: 'Coconut Oil',  title: '4. Coconut Oil Buy & Sell',      icon: 'fa-bottle-droplet',      group: 'Coconut' },
+            { id: 'overheads',  short: 'Utilities',    title: '5. Labour, Firewood & Elec',     icon: 'fa-bolt',                group: 'Processing' },
+            { id: 'jathi_kaya', short: 'Jathi Kaya',   title: '6. Jathi Kaya (Nutmeg)',         icon: 'fa-circle-dot',          group: 'Spices' },
+            { id: 'flower',     short: 'Flower 1&2',   title: '7. Flower / Mace (1st & 2nd)',   icon: 'fa-fan',                 group: 'Spices' },
+            { id: 'parippu',    short: 'Parippu',      title: '8. Parippu (Nutmeg Kernel)',     icon: 'fa-seedling',            group: 'Spices' },
+            { id: 'arecanut',   short: 'Arecanut',     title: '9. Arecanut (Adakka)',           icon: 'fa-tree',                group: 'Spices' },
+            { id: 'pepper',     short: 'Pepper',       title: '10. Pepper (Kurumulaku)',        icon: 'fa-pepper-hot',          group: 'Spices' },
+            { id: 'dairy',      short: 'Dairy & Cows', title: '11. Dairy, Dung & Cows',         icon: 'fa-cow',                 group: 'Farms' },
+            { id: 'rice',       short: 'Rice Farm',    title: '12. Rice Farm (Paddy)',          icon: 'fa-wheat-awn',           group: 'Farms' },
+            { id: 'fish',       short: 'Fish Farm',    title: '13. Fish Farm (Aquaculture)',    icon: 'fa-fish',                group: 'Farms' }
+        ];
+
+        const STORAGE_KEY_ENTRIES = 'krishiledger_entries_v3';
+        const STORAGE_KEY_COWS = 'krishiledger_cows_v3';
+
+        let entries = [];
+        let cows = [];
+        let activePage = 'dashboard';
+        let dashPeriod = 'all'; // 'today', '7d', 'month', 'all'
+        let trendChart = null;
+        let overheadSubTab = 'all'; // 'all', 'Labour', 'Firewood (Copra Drying)', 'Electricity - Dryer', 'Electricity - House'
+        let dairySubTab = 'milk_sales'; // 'milk_sales', 'dung_sales', 'cow_profiles'
+
+        // ==========================================
+        // 2. PERSISTENT STORAGE & HELPERS
+        // ==========================================
+        function todayISO() {
+            const d = new Date();
+            const offset = d.getTimezoneOffset() * 60000;
+            return new Date(d.getTime() - offset).toISOString().split('T')[0];
+        }
+
+        function formatINR(num) {
+            const val = Number(num) || 0;
+            return '₹' + val.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+        }
+
+        function escapeHTML(str) {
+            return String(str || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        function showToast(msg, isError = false) {
+            const box = document.getElementById('toast-box');
+            const txt = document.getElementById('toast-msg');
+            txt.textContent = msg;
+            box.classList.remove('hidden', 'bg-slate-900', 'bg-rose-700');
+            box.classList.add(isError ? 'bg-rose-700' : 'bg-slate-900');
+            setTimeout(() => box.classList.add('hidden'), 2800);
+        }
+
+        async function requestPersistentStorage() {
+            try {
+                if (navigator.storage && navigator.storage.persist) {
+                    await navigator.storage.persist();
+                }
+            } catch (e) {}
+        }
+
+        function updateSaveBadge() {
+            const totalRecords = entries.length + cows.length;
+            const badge = document.getElementById('save-status-badge');
+            const modalCount = document.getElementById('modal-record-count');
+            if (badge) badge.textContent = `${totalRecords} Saved`;
+            if (modalCount) modalCount.textContent = totalRecords;
+        }
+
+        function loadData() {
+            try {
+                const rawE = localStorage.getItem(STORAGE_KEY_ENTRIES)
+                    || localStorage.getItem('krishiledger_entries_v2')
+                    || localStorage.getItem('krishiledger_entries_v1');
+                const rawC = localStorage.getItem(STORAGE_KEY_COWS)
+                    || localStorage.getItem('krishiledger_cows_v2')
+                    || localStorage.getItem('krishiledger_cows_v1');
+                entries = rawE ? JSON.parse(rawE) : [];
+                cows = rawC ? JSON.parse(rawC) : [];
+                updateSaveBadge();
+            } catch (e) {
+                entries = [];
+                cows = [];
+            }
+        }
+
+        function saveEntries() {
+            try {
+                localStorage.setItem(STORAGE_KEY_ENTRIES, JSON.stringify(entries));
+                updateSaveBadge();
+            } catch (e) {
+                showToast('Storage full! Please download a backup.', true);
+            }
+        }
+
+        function saveCows() {
+            try {
+                localStorage.setItem(STORAGE_KEY_COWS, JSON.stringify(cows));
+                updateSaveBadge();
+            } catch (e) {
+                showToast('Could not save cow data.', true);
+            }
+        }
+
+        function requestClearAllData() {
+            document.getElementById('clear-confirm-box').classList.remove('hidden');
+        }
+
+        function confirmClearAllData() {
+            entries = [];
+            cows = [];
+            saveEntries();
+            saveCows();
+            document.getElementById('clear-confirm-box').classList.add('hidden');
+            closeModal('app-link-modal');
+            renderCurrentPage();
+            showToast('All data cleared.');
+        }
+
+        // ==========================================
+        // 3. NAVIGATION & MODALS
+        // ==========================================
+        function renderNavBar() {
+            const nav = document.getElementById('top-nav-pills');
+            nav.innerHTML = PAGES.map(p => {
+                const active = p.id === activePage;
+                return `
+                    <button onclick="switchPage('${p.id}')"
+                        class="px-3 py-1.5 rounded-full whitespace-nowrap transition flex items-center gap-1.5 ${
+                            active
+                            ? 'bg-amber-400 text-emerald-950 font-extrabold shadow-xs'
+                            : 'bg-emerald-900/70 text-emerald-100 hover:bg-emerald-800'
+                        }">
+                        <i class="fa-solid ${p.icon} text-[11px]"></i>
+                        <span>${p.short}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function switchPage(pageId) {
+            activePage = pageId;
+            closeModal('all-pages-modal');
+            renderNavBar();
+            renderCurrentPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openAllPagesDrawer() {
+            const grid = document.getElementById('all-pages-grid');
+            grid.innerHTML = PAGES.map(p => {
+                const count = p.id === 'dashboard'
+                    ? entries.length
+                    : (p.id === 'dairy'
+                        ? entries.filter(e => e.module === 'dairy').length + cows.length
+                        : entries.filter(e => e.module === p.id).length);
+                const isCurrent = p.id === activePage;
+                return `
+                    <button onclick="switchPage('${p.id}')"
+                        class="p-3 rounded-2xl border text-left transition flex flex-col justify-between gap-1.5 ${
+                            isCurrent ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500' : 'bg-slate-50 border-slate-200 hover:bg-white'
+                        }">
+                        <div class="flex items-center justify-between">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs">
+                                <i class="fa-solid ${p.icon}"></i>
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200">${count}</span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-900 leading-snug">${p.title}</div>
+                            <div class="text-[10px] text-slate-500">${p.group}</div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+            document.getElementById('all-pages-modal').classList.remove('hidden');
+        }
+
+        function openAppLinkModal() {
+            updateSaveBadge();
+            document.getElementById('clear-confirm-box').classList.add('hidden');
+            document.getElementById('app-link-modal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // ==========================================
+        // 4. CRUD OPERATIONS (ADD, EDIT, DELETE)
+        // ==========================================
+        function addTransaction(e, moduleKey) {
+            e.preventDefault();
+            const form = e.target;
+            const fd = new FormData(form);
+            const qty = parseFloat(fd.get('qty')) || 0;
+            const rate = parseFloat(fd.get('rate')) || 0;
+            let amount = parseFloat(fd.get('amount')) || 0;
+            if (!amount && qty > 0 && rate > 0) {
+                amount = +(qty * rate).toFixed(2);
+            }
+            if (amount <= 0) {
+                showToast('Please enter a valid Amount or Qty × Rate', true);
+                return;
+            }
+
+            const entry = {
+                id: 'tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                module: moduleKey,
+                flow: fd.get('flow') || 'expense',
+                subtype: fd.get('subtype') || 'General',
+                title: fd.get('title') || fd.get('subtype') || 'Entry',
+                qty,
+                unit: fd.get('unit') || '',
+                rate,
+                amount,
+                date: fd.get('date') || todayISO(),
+                party: fd.get('party') || '',
+                notes: fd.get('notes') || ''
+            };
+
+            entries.unshift(entry);
+            saveEntries();
+            showToast('Entry recorded & saved!');
+            renderCurrentPage();
+        }
+
+        function autoCalcFormAmount(formId) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            const qty = parseFloat(form.querySelector('[name="qty"]')?.value) || 0;
+            const rate = parseFloat(form.querySelector('[name="rate"]')?.value) || 0;
+            const amtInput = form.querySelector('[name="amount"]');
+            if (amtInput && qty > 0 && rate > 0) {
+                amtInput.value = (qty * rate).toFixed(2);
+            }
+        }
+
+        function deleteEntry(id) {
+            entries = entries.filter(item => item.id !== id);
+            saveEntries();
+            showToast('Entry deleted.');
+            renderCurrentPage();
+        }
+
+        function openEditModal(id) {
+            const item = entries.find(e => e.id === id);
+            if (!item) return;
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-date').value = item.date;
+            document.getElementById('edit-flow').value = item.flow;
+            document.getElementById('edit-subtype').value = item.subtype;
+            document.getElementById('edit-title').value = item.title;
+            document.getElementById('edit-qty').value = item.qty || '';
+            document.getElementById('edit-unit').value = item.unit || '';
+            document.getElementById('edit-rate').value = item.rate || '';
+            document.getElementById('edit-amount').value = item.amount;
+            document.getElementById('edit-party').value = item.party || '';
+            document.getElementById('edit-notes').value = item.notes || '';
+            document.getElementById('edit-entry-modal').classList.remove('hidden');
+        }
+
+        function recalcEditTotal() {
+            const q = parseFloat(document.getElementById('edit-qty').value) || 0;
+            const r = parseFloat(document.getElementById('edit-rate').value) || 0;
+            if (q > 0 && r > 0) {
+                document.getElementById('edit-amount').value = (q * r).toFixed(2);
+            }
+        }
+
+        function saveEditedEntry(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const idx = entries.findIndex(item => item.id === id);
+            if (idx === -1) return;
+
+            entries[idx] = {
+                ...entries[idx],
+                date: document.getElementById('edit-date').value,
+                flow: document.getElementById('edit-flow').value,
+                subtype: document.getElementById('edit-subtype').value.trim(),
+                title: document.getElementById('edit-title').value.trim(),
+                qty: parseFloat(document.getElementById('edit-qty').value) || 0,
+                unit: document.getElementById('edit-unit').value.trim(),
+                rate: parseFloat(document.getElementById('edit-rate').value) || 0,
+                amount: parseFloat(document.getElementById('edit-amount').value) || 0,
+                party: document.getElementById('edit-party').value.trim(),
+                notes: document.getElementById('edit-notes').value.trim()
+            };
+
+            saveEntries();
+            closeModal('edit-entry-modal');
+            showToast('Updated recorded entry!');
+            renderCurrentPage();
+        }
+
+        // ==========================================
+        // 5. COW PROFILE MANAGEMENT
+        // ==========================================
+        function addCowProfile(e) {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const cow = {
+                id: 'cow_' + Date.now(),
+                name: fd.get('name').trim(),
+                breed: fd.get('breed').trim() || 'Crossbred',
+                status: fd.get('status') || 'Milking',
+                aiDate: fd.get('aiDate') || '',
+                milkStart: fd.get('milkStart') || '',
+                avgYield: parseFloat(fd.get('avgYield')) || 0,
+                notes: fd.get('notes').trim()
+            };
+            cows.unshift(cow);
+            saveCows();
+            showToast('Cow profile added!');
+            renderCurrentPage();
+        }
+
+        function openEditCowModal(id) {
+            const c = cows.find(x => x.id === id);
+            if (!c) return;
+            document.getElementById('edit-cow-id').value = c.id;
+            document.getElementById('edit-cow-name').value = c.name;
+            document.getElementById('edit-cow-breed').value = c.breed || '';
+            document.getElementById('edit-cow-status').value = c.status || 'Milking';
+            document.getElementById('edit-cow-yield').value = c.avgYield || '';
+            document.getElementById('edit-cow-ai-date').value = c.aiDate || '';
+            document.getElementById('edit-cow-milk-start').value = c.milkStart || '';
+            document.getElementById('edit-cow-notes').value = c.notes || '';
+            document.getElementById('edit-cow-modal').classList.remove('hidden');
+        }
+
+        function saveEditedCow(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-cow-id').value;
+            const idx = cows.findIndex(x => x.id === id);
+            if (idx === -1) return;
+            cows[idx] = {
+                ...cows[idx],
+                name: document.getElementById('edit-cow-name').value.trim(),
+                breed: document.getElementById('edit-cow-breed').value.trim(),
+                status: document.getElementById('edit-cow-status').value,
+                avgYield: parseFloat(document.getElementById('edit-cow-yield').value) || 0,
+                aiDate: document.getElementById('edit-cow-ai-date').value,
+                milkStart: document.getElementById('edit-cow-milk-start').value,
+                notes: document.getElementById('edit-cow-notes').value.trim()
+            };
+            saveCows();
+            closeModal('edit-cow-modal');
+            showToast('Cow profile updated!');
+            renderCurrentPage();
+        }
+
+        function deleteCow(id) {
+            cows = cows.filter(c => c.id !== id);
+            saveCows();
+            showToast('Cow profile removed.');
+            renderCurrentPage();
+        }
+
+        function calcExpectedCalving(aiDateStr) {
+            if (!aiDateStr) return null;
+            const d = new Date(aiDateStr + 'T00:00:00');
+            if (isNaN(d.getTime())) return null;
+            d.setDate(d.getDate() + 283); // Standard ~283 days bovine gestation
+            return d.toISOString().split('T')[0];
+        }
+
+        function calcDaysElapsed(startDateStr) {
+            if (!startDateStr) return null;
+            const start = new Date(startDateStr + 'T00:00:00');
+            const now = new Date();
+            const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+            return diff >= 0 ? diff : 0;
+        }
+
+        // ==========================================
+        // 6. SHARED UI RENDERERS (LEDGER LIST)
+        // ==========================================
+        function renderEntryList(list, emptyMsg = 'No records yet. Add your first daily entry above.') {
+            if (!list.length) {
+                return `
+                    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-6 text-center text-xs text-slate-500">
+                        <i class="fa-regular fa-folder-open text-xl text-slate-400 mb-1.5 block"></i>
+                        ${emptyMsg}
+                    </div>
+                `;
+            }
+            return `
+                <div class="space-y-2.5">
+                    ${list.map(item => {
+                        const isIncome = item.flow === 'income';
+                        const badgeClass = isIncome
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                            : 'bg-rose-100 text-rose-800 border-rose-200';
+                        const amtColor = isIncome ? 'text-emerald-700' : 'text-rose-700';
+                        const sign = isIncome ? '+' : '-';
+                        const qtyInfo = item.qty > 0
+                            ? `${item.qty} ${escapeHTML(item.unit)} ${item.rate > 0 ? `@ ₹${item.rate}` : ''}`
+                            : '';
+                        return `
+                            <div class="bg-white rounded-2xl p-3.5 border border-slate-200/80 card-shadow flex items-start justify-between gap-2.5">
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${badgeClass}">
+                                            ${escapeHTML(item.subtype)}
+                                        </span>
+                                        <span class="text-[11px] font-semibold text-slate-400">${escapeHTML(item.date)}</span>
+                                    </div>
+                                    <div class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${escapeHTML(item.title)}</div>
+                                    ${qtyInfo ? `<div class="text-[11px] font-semibold text-slate-600">${qtyInfo}</div>` : ''}
+                                    ${(item.party || item.notes) ? `
+                                        <div class="text-[11px] text-slate-500 truncate">
+                                            ${item.party ? `<i class="fa-solid fa-user text-[9px] mr-1"></i>${escapeHTML(item.party)}` : ''}
+                                            ${item.party && item.notes ? ' • ' : ''}
+                                            ${escapeHTML(item.notes)}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                <div class="flex flex-col items-end shrink-0 gap-2">
+                                    <div class="text-sm font-extrabold ${amtColor}">${sign}${formatINR(item.amount)}</div>
+                                    <div class="flex items-center gap-1.5">
+                                        <button onclick="openEditModal('${item.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800 text-[11px] font-bold transition">
+                                            <i class="fa-solid fa-pen text-[10px]"></i> Edit
+                                        </button>
+                                        <button onclick="deleteEntry('${item.id}')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 text-[11px] font-bold transition">
+                                            <i class="fa-solid fa-trash text-[10px]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 7. PAGE RENDERERS
+        // ==========================================
+        function getFilteredDashboardEntries() {
+            const nowStr = todayISO();
+            const nowDate = new Date(nowStr + 'T00:00:00');
+            return entries.filter(e => {
+                if (dashPeriod === 'all') return true;
+                if (dashPeriod === 'today') return e.date === nowStr;
+                const d = new Date(e.date + 'T00:00:00');
+                const diffDays = (nowDate - d) / (1000 * 60 * 60 * 24);
+                if (dashPeriod === '7d') return diffDays >= 0 && diffDays <= 7;
+                if (dashPeriod === 'month') return e.date.slice(0, 7) === nowStr.slice(0, 7);
+                return true;
+            });
+        }
+
+        function renderDashboard() {
+            const filtered = getFilteredDashboardEntries();
+
+            const totalIn = filtered.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+            const totalOut = filtered.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+            const net = totalIn - totalOut;
+
+            // Overheads breakdown (Labour, Firewood, Dryer Elec, House Elec)
+            const ovh = filtered.filter(e => e.module === 'overheads');
+            const sumSub = (sub) => ovh.filter(e => e.subtype === sub).reduce((s, e) => s + e.amount, 0);
+            const labourCost = sumSub('Labour');
+            const firewoodCost = sumSub('Firewood (Copra Drying)');
+            const dryerElec = sumSub('Electricity - Dryer');
+            const houseElec = sumSub('Electricity - House');
+
+            // Department Net P&L
+            const deptSummaries = PAGES.filter(p => p.id !== 'dashboard').map(p => {
+                const modItems = filtered.filter(e => e.module === p.id);
+                const inc = modItems.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+                const exp = modItems.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+                return { ...p, inc, exp, net: inc - exp, count: modItems.length };
+            });
+
+            return `
+                <!-- Period Filter Pills -->
+                <div class="flex items-center justify-between gap-2 bg-white p-2 rounded-2xl border border-slate-200 card-shadow">
+                    <span class="text-xs font-extrabold text-slate-700 pl-2">Period:</span>
+                    <div class="flex gap-1">
+                        ${[
+                            { id: 'today', label: 'Today' },
+                            { id: '7d', label: '7 Days' },
+                            { id: 'month', label: 'This Month' },
+                            { id: 'all', label: 'All Time' }
+                        ].map(t => `
+                            <button onclick="dashPeriod='${t.id}'; renderCurrentPage();"
+                                class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition ${
+                                    dashPeriod === t.id ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                }">${t.label}</button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Master KPI Summary Card -->
+                <div class="bg-gradient-to-br from-emerald-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-4 sm:p-5 shadow-lg space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] uppercase tracking-wider text-emerald-300 font-bold">Net Profit / Cash Balance</div>
+                            <div class="text-2xl sm:text-3xl font-extrabold mt-0.5 ${net >= 0 ? 'text-white' : 'text-rose-300'}">
+                                ${net >= 0 ? '' : '-'}${formatINR(Math.abs(net))}
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-extrabold ${net >= 0 ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/30' : 'bg-rose-500/20 text-rose-200 border border-rose-400/30'}">
+                            ${net >= 0 ? 'Net Profit' : 'Net Expense'}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5 pt-1 border-t border-white/10">
+                        <div class="bg-white/5 rounded-2xl p-3">
+                            <div class="text-[11px] text-emerald-200 font-semibold">Total Cash-In (Sales)</div>
+                            <div class="text-base font-extrabold text-emerald-300 mt-0.5">+${formatINR(totalIn)}</div>
+                        </div>
+                        <div class="bg-white/5 rounded-2xl p-3">
+                            <div class="text-[11px] text-rose-200 font-semibold">Total Cash-Out (Expenses)</div>
+                            <div class="text-base font-extrabold text-rose-300 mt-0.5">-${formatINR(totalOut)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Separate Processing & Utility Split Card -->
+                <div class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                            <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Processing & Utility Split
+                        </h3>
+                        <button onclick="switchPage('overheads')" class="text-[11px] font-bold text-emerald-700 hover:underline">Open Page →</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-100">
+                            <div class="text-[10px] font-bold text-amber-800">Labour Wages</div>
+                            <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(labourCost)}</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-orange-50 border border-orange-100">
+                            <div class="text-[10px] font-bold text-orange-800">Firewood (Copra Drying)</div>
+                            <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(firewoodCost)}</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-rose-50 border border-rose-100">
+                            <div class="text-[10px] font-bold text-rose-800">Electricity — Dryer</div>
+                            <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(dryerElec)}</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-sky-50 border border-sky-100">
+                            <div class="text-[10px] font-bold text-sky-800">Electricity — House</div>
+                            <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(houseElec)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cash-In vs Cash-Out Trend Chart -->
+                <div class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">Cash-In vs Cash-Out Trend</h3>
+                    <div class="h-48 w-full">
+                        <canvas id="dept-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Department-Wise Quick Jump & P&L Grid -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between px-1">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Department Profit & Loss</h3>
+                        ${entries.length === 0 ? `
+                            <button onclick="loadSampleEstateData()" class="text-[11px] font-extrabold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
+                                + Load Sample Estate Data
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        ${deptSummaries.map(d => `
+                            <div onclick="switchPage('${d.id}')" class="bg-white hover:bg-emerald-50/40 cursor-pointer rounded-2xl p-3.5 border border-slate-200 card-shadow flex items-center justify-between transition">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                                        <i class="fa-solid ${d.icon}"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-extrabold text-slate-900 truncate">${d.title}</div>
+                                        <div class="text-[10px] text-slate-500">
+                                            In: <span class="text-emerald-700 font-bold">${formatINR(d.inc)}</span> • Out: <span class="text-rose-700 font-bold">${formatINR(d.exp)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0 ml-2">
+                                    <div class="text-xs font-extrabold ${d.net >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                                        ${d.net >= 0 ? '+' : '-'}${formatINR(Math.abs(d.net))}
+                                    </div>
+                                    <div class="text-[10px] text-slate-400 font-semibold">${d.count} entries →</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">Recent Daily Entries (${filtered.length})</h3>
+                    ${renderEntryList(filtered.slice(0, 12))}
+                </div>
+            `;
+        }
+
+        // 1. COCONUT BUYING (CUT & UNCUT WITH AVERAGE BUYING PRICES)
+        function renderCoconutBuying() {
+            const list = entries.filter(e => e.module === 'coco_buy');
+            const cutItems = list.filter(e => e.subtype === 'Cut Coconut');
+            const uncutItems = list.filter(e => e.subtype === 'Uncut Coconut');
+
+            const cutTotal = cutItems.reduce((s, e) => s + e.amount, 0);
+            const cutQty = cutItems.reduce((s, e) => s + e.qty, 0);
+            const cutAvg = cutQty > 0 ? (cutTotal / cutQty) : 0;
+
+            const uncutTotal = uncutItems.reduce((s, e) => s + e.amount, 0);
+            const uncutQty = uncutItems.reduce((s, e) => s + e.qty, 0);
+            const uncutAvg = uncutQty > 0 ? (uncutTotal / uncutQty) : 0;
+
+            return `
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div class="bg-amber-900 text-white rounded-2xl p-3.5 shadow-sm">
+                        <div class="text-[11px] font-bold text-amber-200">Cut (Split) Coconut</div>
+                        <div class="text-lg font-extrabold mt-0.5">${formatINR(cutTotal)}</div>
+                        <div class="text-[10px] text-amber-200/90 mt-0.5">Qty: ${cutQty.toLocaleString('en-IN')} • Avg: ${formatINR(cutAvg)}</div>
+                    </div>
+                    <div class="bg-emerald-900 text-white rounded-2xl p-3.5 shadow-sm">
+                        <div class="text-[11px] font-bold text-emerald-200">Uncut (Whole) Coconut</div>
+                        <div class="text-lg font-extrabold mt-0.5">${formatINR(uncutTotal)}</div>
+                        <div class="text-[10px] text-emerald-200/90 mt-0.5">Qty: ${uncutQty.toLocaleString('en-IN')} • Avg: ${formatINR(uncutAvg)}</div>
+                    </div>
+                </div>
+
+                <form id="form-coco-buy" onsubmit="addTransaction(event, 'coco_buy')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <h2 class="text-sm font-extrabold text-slate-900">Record Coconut Purchase (Cut / Uncut)</h2>
+                    <input type="hidden" name="flow" value="expense">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Coconut Type *</label>
+                            <select name="subtype" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-extrabold bg-amber-50/60">
+                                <option value="Cut Coconut">Cut Coconut (Split)</option>
+                                <option value="Uncut Coconut">Uncut Coconut (Whole)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                            <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Lot / Batch Description *</label>
+                        <input type="text" name="title" placeholder="e.g., Morning Farm Lot / Split Nuts" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Quantity</label>
+                            <input type="number" step="any" name="qty" placeholder="500" oninput="autoCalcFormAmount('form-coco-buy')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                            <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                <option value="Nuts">Nuts</option>
+                                <option value="kg">kg</option>
+                                <option value="Bags">Bags</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate (₹)</label>
+                            <input type="number" step="any" name="rate" placeholder="22" oninput="autoCalcFormAmount('form-coco-buy')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Buying Cost (₹) *</label>
+                            <input type="number" step="any" name="amount" required placeholder="11000" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Farmer / Supplier</label>
+                            <input type="text" name="party" placeholder="Supplier name" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <input type="text" name="notes" placeholder="Notes (moisture, size, vehicle charge...)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-sm">
+                        + Save Coconut Purchase
+                    </button>
+                </form>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">Coconut Purchase History (${list.length})</h3>
+                    ${renderEntryList(list)}
+                </div>
+            `;
+        }
+
+        // 2. COCONUT SELLING
+        function renderCoconutSelling() {
+            const list = entries.filter(e => e.module === 'coco_sell');
+            const totalSales = list.reduce((s, e) => s + e.amount, 0);
+            const totalBought = entries.filter(e => e.module === 'coco_buy').reduce((s, e) => s + e.amount, 0);
+            const netMargin = totalSales - totalBought;
+
+            return `
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div class="bg-emerald-800 text-white rounded-2xl p-3.5 shadow-sm">
+                        <div class="text-[11px] font-bold text-emerald-200">Total Coconut Sales</div>
+                        <div class="text-lg font-extrabold mt-0.5">${formatINR(totalSales)}</div>
+                    </div>
+                    <div class="bg-slate-800 text-white rounded-2xl p-3.5 shadow-sm">
+                        <div class="text-[11px] font-bold text-slate-300">Net vs Coconut Buying</div>
+                        <div class="text-lg font-extrabold mt-0.5 ${netMargin >= 0 ? 'text-emerald-300' : 'text-rose-300'}">
+                            ${netMargin >= 0 ? '+' : '-'}${formatINR(Math.abs(netMargin))}
+                        </div>
+                    </div>
+                </div>
+
+                <form id="form-coco-sell" onsubmit="addTransaction(event, 'coco_sell')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <h2 class="text-sm font-extrabold text-slate-900">Record Coconut Sale</h2>
+                    <input type="hidden" name="flow" value="income">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Sale Grade / Type</label>
+                            <select name="subtype" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold bg-white">
+                                <option value="Whole Coconut Sale">Whole Coconut</option>
+                                <option value="Cut Coconut Sale">Cut Coconut</option>
+                                <option value="Dehusked Coconut">Dehusked Coconut</option>
+                                <option value="Tender Coconut">Tender Coconut</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                            <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Sale Description *</label>
+                        <input type="text" name="title" placeholder="e.g., Wholesale Load to Market" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Quantity</label>
+                            <input type="number" step="any" name="qty" placeholder="400" oninput="autoCalcFormAmount('form-coco-sell')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                            <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                <option value="Nuts">Nuts</option>
+                                <option value="kg">kg</option>
+                                <option value="Bags">Bags</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Selling Rate (₹)</label>
+                            <input type="number" step="any" name="rate" placeholder="28" oninput="autoCalcFormAmount('form-coco-sell')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Sale Amount (₹) *</label>
+                            <input type="number" step="any" name="amount" required placeholder="11200" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Buyer / Merchant</label>
+                            <input type="text" name="party" placeholder="Buyer name" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <input type="text" name="notes" placeholder="Notes (payment mode, transport...)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-sm">
+                        + Save Coconut Sale
+                    </button>
+                </form>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">Coconut Sales Ledger (${list.length})</h3>
+                    ${renderEntryList(list)}
+                </div>
+            `;
+        }
+
+        // GENERIC BUY & SELL LEDGER (COPRA, OIL & ALL 5 SPICES)
+        function renderBuySellModule(config) {
+            const list = entries.filter(e => e.module === config.moduleKey);
+            const sales = list.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+            const buys = list.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+            const profit = sales - buys;
+
+            let gradeCards = '';
+            if (config.gradeBreakdown) {
+                const g1 = list.filter(e => e.subtype.includes('1st'));
+                const g2 = list.filter(e => e.subtype.includes('2nd'));
+                const g1Buy = g1.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+                const g1Sell = g1.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+                const g1Net = g1Sell - g1Buy;
+
+                const g2Buy = g2.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+                const g2Sell = g2.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+                const g2Net = g2Sell - g2Buy;
+
+                gradeCards = `
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="bg-red-50 border border-red-200 rounded-2xl p-3 space-y-1">
+                            <div class="text-[11px] font-extrabold text-red-900">1st Quality Flower (Red)</div>
+                            <div class="text-base font-extrabold text-slate-900">${g1Net >= 0 ? '+' : '-'}${formatINR(Math.abs(g1Net))}</div>
+                            <div class="text-[10px] text-slate-600">Buy: ${formatINR(g1Buy)} • Sell: ${formatINR(g1Sell)}</div>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 space-y-1">
+                            <div class="text-[11px] font-extrabold text-amber-900">2nd Quality Flower (Yellow)</div>
+                            <div class="text-base font-extrabold text-slate-900">${g2Net >= 0 ? '+' : '-'}${formatINR(Math.abs(g2Net))}</div>
+                            <div class="text-[10px] text-slate-600">Buy: ${formatINR(g2Buy)} • Sell: ${formatINR(g2Sell)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-rose-700">Total Bought</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(buys)}</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-emerald-700">Total Sold</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(sales)}</div>
+                    </div>
+                    <div class="bg-emerald-950 text-white rounded-2xl p-3 shadow-sm">
+                        <div class="text-[10px] font-bold text-emerald-300">Net Profit</div>
+                        <div class="text-sm font-extrabold mt-0.5 ${profit >= 0 ? 'text-emerald-300' : 'text-rose-300'}">
+                            ${profit >= 0 ? '+' : '-'}${formatINR(Math.abs(profit))}
+                        </div>
+                    </div>
+                </div>
+
+                ${gradeCards}
+
+                <form id="form-${config.moduleKey}" onsubmit="addTransaction(event, '${config.moduleKey}')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <h2 class="text-sm font-extrabold text-slate-900">${config.formHeading}</h2>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Transaction Type *</label>
+                            <select name="flow" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-extrabold bg-slate-50">
+                                <option value="expense">Buying (Purchase)</option>
+                                <option value="income">Selling (Sale)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Quality / Grade *</label>
+                            <select name="subtype" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold bg-white">
+                                ${config.subtypes.map(st => `<option value="${st}">${st}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Description *</label>
+                            <input type="text" name="title" placeholder="${config.placeholder}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                            <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Weight / Qty</label>
+                            <input type="number" step="any" name="qty" placeholder="100" oninput="autoCalcFormAmount('form-${config.moduleKey}')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                            <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                ${config.units.map(u => `<option value="${u}">${u}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Price / Rate (₹)</label>
+                            <input type="number" step="any" name="rate" placeholder="115" oninput="autoCalcFormAmount('form-${config.moduleKey}')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Amount (₹) *</label>
+                            <input type="number" step="any" name="amount" required placeholder="11500" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Trader / Farmer</label>
+                            <input type="text" name="party" placeholder="Party name" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <input type="text" name="notes" placeholder="Notes (drying batch, moisture, bags...)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-sm">
+                        + Save Entry
+                    </button>
+                </form>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">Recorded Entries (${list.length})</h3>
+                    ${renderEntryList(list)}
+                </div>
+            `;
+        }
+
+        // 5. OVERHEADS: 4 STRICTLY SEPARATED SUB-TABS (LABOUR, FIREWOOD, ELECTRICITY DRYER, ELECTRICITY HOUSE)
+        function renderOverheads() {
+            const list = entries.filter(e => e.module === 'overheads');
+            const sumType = (t) => list.filter(e => e.subtype === t).reduce((s, e) => s + e.amount, 0);
+
+            const labour = sumType('Labour');
+            const firewood = sumType('Firewood (Copra Drying)');
+            const elecDryer = sumType('Electricity - Dryer');
+            const elecHouse = sumType('Electricity - House');
+
+            const filteredList = overheadSubTab === 'all'
+                ? list
+                : list.filter(e => e.subtype === overheadSubTab);
+
+            const defaultSelect = overheadSubTab === 'all' ? 'Labour' : overheadSubTab;
+
+            return `
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div onclick="overheadSubTab='Labour'; renderCurrentPage();" class="cursor-pointer bg-white rounded-2xl p-3 border ${overheadSubTab === 'Labour' ? 'border-amber-500 ring-2 ring-amber-400/40' : 'border-amber-200'} card-shadow">
+                        <div class="text-[11px] font-bold text-amber-800"><i class="fa-solid fa-people-carry-box mr-1"></i>Labour Wages</div>
+                        <div class="text-base font-extrabold text-slate-900 mt-0.5">${formatINR(labour)}</div>
+                    </div>
+                    <div onclick="overheadSubTab='Firewood (Copra Drying)'; renderCurrentPage();" class="cursor-pointer bg-white rounded-2xl p-3 border ${overheadSubTab === 'Firewood (Copra Drying)' ? 'border-orange-500 ring-2 ring-orange-400/40' : 'border-orange-200'} card-shadow">
+                        <div class="text-[11px] font-bold text-orange-800"><i class="fa-solid fa-fire mr-1"></i>Firewood (Copra Drying)</div>
+                        <div class="text-base font-extrabold text-slate-900 mt-0.5">${formatINR(firewood)}</div>
+                    </div>
+                    <div onclick="overheadSubTab='Electricity - Dryer'; renderCurrentPage();" class="cursor-pointer bg-rose-950 text-white rounded-2xl p-3 shadow-sm ${overheadSubTab === 'Electricity - Dryer' ? 'ring-2 ring-amber-400' : ''}">
+                        <div class="text-[11px] font-bold text-rose-200"><i class="fa-solid fa-industry mr-1"></i>Electricity — Dryer</div>
+                        <div class="text-base font-extrabold mt-0.5">${formatINR(elecDryer)}</div>
+                    </div>
+                    <div onclick="overheadSubTab='Electricity - House'; renderCurrentPage();" class="cursor-pointer bg-sky-950 text-white rounded-2xl p-3 shadow-sm ${overheadSubTab === 'Electricity - House' ? 'ring-2 ring-amber-400' : ''}">
+                        <div class="text-[11px] font-bold text-sky-200"><i class="fa-solid fa-house mr-1"></i>Electricity — House</div>
+                        <div class="text-base font-extrabold mt-0.5">${formatINR(elecHouse)}</div>
+                    </div>
+                </div>
+
+                <!-- 4 Strictly Separated Sub-Tabs -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-white p-1.5 rounded-2xl border border-slate-200 card-shadow">
+                    ${[
+                        { id: 'all', label: 'All (4)' },
+                        { id: 'Labour', label: 'Labour' },
+                        { id: 'Firewood (Copra Drying)', label: 'Firewood' },
+                        { id: 'Electricity - Dryer', label: 'Dryer Elec' },
+                        { id: 'Electricity - House', label: 'House Elec' }
+                    ].map(tab => `
+                        <button onclick="overheadSubTab='${tab.id}'; renderCurrentPage();"
+                            class="px-3 py-1.5 rounded-xl text-[11px] font-extrabold whitespace-nowrap transition ${
+                                overheadSubTab === tab.id ? 'bg-emerald-700 text-white' : 'text-slate-600 hover:bg-slate-100'
+                            }">${tab.label}</button>
+                    `).join('')}
+                </div>
+
+                <form id="form-overheads" onsubmit="addTransaction(event, 'overheads')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <h2 class="text-sm font-extrabold text-slate-900">Record Labour, Firewood or Separate Electricity Bill</h2>
+                    <input type="hidden" name="flow" value="expense">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Expense Head *</label>
+                            <select name="subtype" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-extrabold bg-rose-50/40">
+                                <option value="Labour" ${defaultSelect === 'Labour' ? 'selected' : ''}>Labour</option>
+                                <option value="Firewood (Copra Drying)" ${defaultSelect === 'Firewood (Copra Drying)' ? 'selected' : ''}>Firewood (for Copra Drying)</option>
+                                <option value="Electricity - Dryer" ${defaultSelect === 'Electricity - Dryer' ? 'selected' : ''}>Electricity — Dryer Meter</option>
+                                <option value="Electricity - House" ${defaultSelect === 'Electricity - House' ? 'selected' : ''}>Electricity — House Meter</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                            <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Work / Bill Description *</label>
+                        <input type="text" name="title" placeholder="e.g., 3 Workers Copra Kiln / KSEB Dryer Meter Bill" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Qty / Units</label>
+                            <input type="number" step="any" name="qty" placeholder="3" oninput="autoCalcFormAmount('form-overheads')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                            <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                <option value="Workers">Workers</option>
+                                <option value="Loads">Loads (Wood)</option>
+                                <option value="Ton">Ton</option>
+                                <option value="kWh Units">kWh Units</option>
+                                <option value="Bill">Bill</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate (₹)</label>
+                            <input type="number" step="any" name="rate" placeholder="850" oninput="autoCalcFormAmount('form-overheads')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Expense (₹) *</label>
+                            <input type="number" step="any" name="amount" required placeholder="2550" class="w-full rounded-xl border border-rose-400 bg-rose-50/40 px-3 py-2 text-sm font-extrabold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Worker / Consumer No.</label>
+                            <input type="text" name="party" placeholder="Name / Meter ID" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <input type="text" name="notes" placeholder="Notes (shift, meter reading, wood type...)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-sm">
+                        + Save Utility / Labour Expense
+                    </button>
+                </form>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">
+                        ${overheadSubTab === 'all' ? 'All Overheads' : overheadSubTab} Ledger (${filteredList.length})
+                    </h3>
+                    ${renderEntryList(filteredList)}
+                </div>
+            `;
+        }
+
+        // 11. DAIRY & CATTLE FARM (MILKING & SALES, COW DUNG SALES, COW PROFILES)
+        function renderDairyPage() {
+            const dairyEntries = entries.filter(e => e.module === 'dairy');
+            const milkSales = dairyEntries.filter(e => e.subtype === 'Milk Sale').reduce((s, e) => s + e.amount, 0);
+            const milkLiters = dairyEntries.filter(e => e.subtype === 'Milk Sale' || e.subtype === 'Daily Milking Log').reduce((s, e) => s + e.qty, 0);
+            const dungSales = dairyEntries.filter(e => e.subtype === 'Cow Dung Sale').reduce((s, e) => s + e.amount, 0);
+            const dairyExpenses = dairyEntries.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+
+            return `
+                <!-- Dairy Top KPIs -->
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-sky-900 text-white rounded-2xl p-3 shadow-sm">
+                        <div class="text-[10px] font-bold text-sky-200">Milk Sales</div>
+                        <div class="text-sm font-extrabold mt-0.5">${formatINR(milkSales)}</div>
+                        <div class="text-[10px] text-sky-200">${milkLiters} L logged</div>
+                    </div>
+                    <div class="bg-amber-900 text-white rounded-2xl p-3 shadow-sm">
+                        <div class="text-[10px] font-bold text-amber-200">Cow Dung Sales</div>
+                        <div class="text-sm font-extrabold mt-0.5">${formatINR(dungSales)}</div>
+                        <div class="text-[10px] text-amber-200">Manure income</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-slate-500">Herd Size</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${cows.length} Cows</div>
+                        <div class="text-[10px] text-rose-600">Feed/Exp: ${formatINR(dairyExpenses)}</div>
+                    </div>
+                </div>
+
+                <!-- Sub-Navigation Tabs for Dairy -->
+                <div class="grid grid-cols-3 gap-1.5 bg-white p-1.5 rounded-2xl border border-slate-200 card-shadow">
+                    <button onclick="dairySubTab='milk_sales'; renderCurrentPage();" class="py-2 px-2 rounded-xl text-[11px] font-extrabold transition ${dairySubTab === 'milk_sales' ? 'bg-emerald-700 text-white' : 'text-slate-600 hover:bg-slate-100'}">
+                        🥛 Milking & Sales
+                    </button>
+                    <button onclick="dairySubTab='dung_sales'; renderCurrentPage();" class="py-2 px-2 rounded-xl text-[11px] font-extrabold transition ${dairySubTab === 'dung_sales' ? 'bg-emerald-700 text-white' : 'text-slate-600 hover:bg-slate-100'}">
+                        💩 Cow Dung Sales
+                    </button>
+                    <button onclick="dairySubTab='cow_profiles'; renderCurrentPage();" class="py-2 px-2 rounded-xl text-[11px] font-extrabold transition ${dairySubTab === 'cow_profiles' ? 'bg-emerald-700 text-white' : 'text-slate-600 hover:bg-slate-100'}">
+                        🐄 Cow Profiles
+                    </button>
+                </div>
+
+                ${dairySubTab === 'milk_sales' ? `
+                    <form id="form-dairy-milk" onsubmit="addTransaction(event, 'dairy')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                        <h2 class="text-sm font-extrabold text-slate-900">Record Daily Milking, Milk Sale or Feed Expense</h2>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Entry Type</label>
+                                <select name="subtype" onchange="this.form.flow.value = this.value === 'Cattle Feed / Vet' ? 'expense' : 'income'" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold bg-white">
+                                    <option value="Milk Sale">Milk Sale (Society / Retail)</option>
+                                    <option value="Daily Milking Log">Daily Milking Yield Log</option>
+                                    <option value="Cattle Feed / Vet">Cattle Feed / Vet Expense</option>
+                                </select>
+                                <input type="hidden" name="flow" value="income">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                                <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Description / Cow Name *</label>
+                            <input type="text" name="title" placeholder="e.g., Morning & Evening Milk to Society" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Liters / Qty</label>
+                                <input type="number" step="any" name="qty" placeholder="24" oninput="autoCalcFormAmount('form-dairy-milk')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                                <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                    <option value="Liters">Liters</option>
+                                    <option value="Bags">Bags</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate / Liter (₹)</label>
+                                <input type="number" step="any" name="rate" placeholder="46" oninput="autoCalcFormAmount('form-dairy-milk')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Amount (₹) *</label>
+                                <input type="number" step="any" name="amount" required placeholder="1104" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Society / Buyer</label>
+                                <input type="text" name="party" placeholder="Milk Society / Customer" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                            </div>
+                        </div>
+                        <input type="text" name="notes" placeholder="Fat %, SNF, shift details..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs">
+                            + Save Dairy Record
+                        </button>
+                    </form>
+                    ${renderEntryList(dairyEntries.filter(e => e.subtype !== 'Cow Dung Sale'))}
+                ` : ''}
+
+                ${dairySubTab === 'dung_sales' ? `
+                    <form id="form-dairy-dung" onsubmit="addTransaction(event, 'dairy')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                        <h2 class="text-sm font-extrabold text-slate-900">Record Cow Dung / Organic Manure Sale</h2>
+                        <input type="hidden" name="flow" value="income">
+                        <input type="hidden" name="subtype" value="Cow Dung Sale">
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Batch / Load Title *</label>
+                                <input type="text" name="title" placeholder="e.g., Tractor Load Dried Dung" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                                <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Quantity</label>
+                                <input type="number" step="any" name="qty" placeholder="2" oninput="autoCalcFormAmount('form-dairy-dung')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                                <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                    <option value="Tractor Loads">Tractor Loads</option>
+                                    <option value="Sacks / Bags">Sacks / Bags</option>
+                                    <option value="kg">kg</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate (₹)</label>
+                                <input type="number" step="any" name="rate" placeholder="2500" oninput="autoCalcFormAmount('form-dairy-dung')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Sale Amount (₹) *</label>
+                                <input type="number" step="any" name="amount" required placeholder="5000" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Buyer Name</label>
+                                <input type="text" name="party" placeholder="Farmer / Nursery" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                            </div>
+                        </div>
+                        <input type="text" name="notes" placeholder="Notes..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-extrabold text-xs">
+                            + Save Cow Dung Sale
+                        </button>
+                    </form>
+                    ${renderEntryList(dairyEntries.filter(e => e.subtype === 'Cow Dung Sale'))}
+                ` : ''}
+
+                ${dairySubTab === 'cow_profiles' ? `
+                    <form onsubmit="addCowProfile(event)" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                        <h2 class="text-sm font-extrabold text-slate-900">Add Cow Profile (Impregnate Date & Milking Period)</h2>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Cow Name / Tag No. *</label>
+                                <input type="text" name="name" placeholder="e.g., Lakshmi (#01)" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Breed</label>
+                                <input type="text" name="breed" placeholder="HF / Jersey / Vechur" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Status</label>
+                                <select name="status" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold bg-white">
+                                    <option value="Milking">Milking</option>
+                                    <option value="Pregnant & Milking">Pregnant & Milking</option>
+                                    <option value="Pregnant (Dry)">Pregnant (Dry)</option>
+                                    <option value="Heifer / Dry">Heifer / Dry</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Avg Daily Milk (Liters)</label>
+                                <input type="number" step="any" name="avgYield" placeholder="14.5" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Impregnation / AI Date</label>
+                                <input type="date" name="aiDate" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Milking Start Date</label>
+                                <input type="date" name="milkStart" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                            </div>
+                        </div>
+                        <input type="text" name="notes" placeholder="Vaccination, deworming, calving history..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        <button type="submit" class="w-full py-2.5 rounded-xl bg-sky-800 hover:bg-sky-900 text-white font-extrabold text-xs">
+                            + Register Cow Profile
+                        </button>
+                    </form>
+
+                    <div class="space-y-2.5">
+                        ${cows.length === 0 ? `
+                            <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-6 text-center text-xs text-slate-500">
+                                No cows registered yet. Add your cows above to track impregnation dates, expected calving, and milking period days.
+                            </div>
+                        ` : cows.map(c => {
+                            const calving = calcExpectedCalving(c.aiDate);
+                            const milkDays = calcDaysElapsed(c.milkStart);
+                            return `
+                                <div class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-2">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-sm font-extrabold text-slate-900">🐄 ${escapeHTML(c.name)}</span>
+                                                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">${escapeHTML(c.status)}</span>
+                                            </div>
+                                            <div class="text-[11px] text-slate-500 mt-0.5">Breed: ${escapeHTML(c.breed)} • Avg Yield: <strong>${c.avgYield || 0} L/day</strong></div>
+                                        </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <button onclick="openEditCowModal('${c.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 text-slate-700 text-[11px] font-bold">Edit</button>
+                                            <button onclick="deleteCow('${c.id}')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 text-[11px] font-bold"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+                                        <div class="bg-amber-50 rounded-xl p-2 border border-amber-100">
+                                            <div class="text-amber-800 font-bold">Impregnation / AI Date</div>
+                                            <div class="font-extrabold text-slate-900">${c.aiDate || 'Not set'}</div>
+                                            ${calving ? `<div class="text-[10px] text-emerald-700 font-bold mt-0.5">Expected Calving: ${calving}</div>` : ''}
+                                        </div>
+                                        <div class="bg-emerald-50 rounded-xl p-2 border border-emerald-100">
+                                            <div class="text-emerald-800 font-bold">Milking Period</div>
+                                            <div class="font-extrabold text-slate-900">${c.milkStart ? `Started ${c.milkStart}` : 'Not set'}</div>
+                                            ${milkDays !== null ? `<div class="text-[10px] text-emerald-700 font-bold mt-0.5">${milkDays} Active Milking Days</div>` : ''}
+                                        </div>
+                                    </div>
+                                    ${c.notes ? `<div class="text-[11px] text-slate-500 pt-0.5">${escapeHTML(c.notes)}</div>` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // 12. RICE FARM (PADDY: LAND AREA, LABOUR, TRACTOR, FERTILIZER & HARVEST PRODUCTION)
+        function renderRicePage() {
+            const list = entries.filter(e => e.module === 'rice');
+            const sumCat = (cat) => list.filter(e => e.subtype === cat).reduce((s, e) => s + e.amount, 0);
+            const labour = sumCat('Labour Cost');
+            const tractor = sumCat('Tractor / Tiller Cost');
+            const fertilizer = sumCat('Fertilizer & Seeds Cost');
+            const prodIncome = list.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+            const totalExp = list.filter(e => e.flow === 'expense').reduce((s, e) => s + e.amount, 0);
+            const harvestQty = list.filter(e => e.flow === 'income').reduce((s, e) => s + e.qty, 0);
+
+            return `
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-slate-500">Labour Cost</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(labour)}</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-slate-500">Tractor / Tiller</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(tractor)}</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-slate-500">Fertilizer & Seeds</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(fertilizer)}</div>
+                    </div>
+                    <div class="bg-teal-900 text-white rounded-2xl p-3 shadow-sm">
+                        <div class="text-[10px] font-bold text-teal-200">Harvest vs Cost</div>
+                        <div class="text-sm font-extrabold mt-0.5">${prodIncome - totalExp >= 0 ? '+' : '-'}${formatINR(Math.abs(prodIncome - totalExp))}</div>
+                        <div class="text-[10px] text-teal-200">Harvest: ${harvestQty} kg</div>
+                    </div>
+                </div>
+
+                <form id="form-rice" onsubmit="addTransaction(event, 'rice')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <h2 class="text-sm font-extrabold text-slate-900">Record Rice Farm Expense or Paddy Production</h2>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Category *</label>
+                            <select name="subtype" onchange="this.form.flow.value = this.value === 'Harvest Production & Sales' ? 'income' : 'expense'" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-extrabold bg-white">
+                                <option value="Labour Cost">Labour Cost</option>
+                                <option value="Tractor / Tiller Cost">Tractor / Tiller Cost</option>
+                                <option value="Fertilizer & Seeds Cost">Fertilizer & Seeds Cost</option>
+                                <option value="Harvest Production & Sales">Harvest Production & Sales (Income)</option>
+                            </select>
+                            <input type="hidden" name="flow" value="expense">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                            <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Land Area & Description *</label>
+                        <input type="text" name="title" placeholder="e.g., 2.5 Acres East Padam — Tractor Ploughing" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Land Area / Qty</label>
+                            <input type="number" step="any" name="qty" placeholder="2.5" oninput="autoCalcFormAmount('form-rice')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                            <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                <option value="Acres">Acres</option>
+                                <option value="Cents">Cents</option>
+                                <option value="Hours">Hours (Tractor)</option>
+                                <option value="Bags">Bags (Fertilizer)</option>
+                                <option value="kg">kg (Paddy)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate (₹)</label>
+                            <input type="number" step="any" name="rate" placeholder="1800" oninput="autoCalcFormAmount('form-rice')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Amount (₹) *</label>
+                            <input type="number" step="any" name="amount" required placeholder="4500" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Operator / Mill / Worker</label>
+                            <input type="text" name="party" placeholder="Name" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <input type="text" name="notes" placeholder="Crop variety (Uma, Jyothi), moisture, remarks..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-teal-800 hover:bg-teal-900 text-white font-extrabold text-xs">
+                        + Save Rice Farm Record
+                    </button>
+                </form>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">Rice Farm Ledger (${list.length})</h3>
+                    ${renderEntryList(list)}
+                </div>
+            `;
+        }
+
+        // 13. FISH FARM (AQUACULTURE: FINGERLING COST, POND COST, FEED COST & FISH HARVEST SALES)
+        function renderFishPage() {
+            const list = entries.filter(e => e.module === 'fish');
+            const sumCat = (cat) => list.filter(e => e.subtype === cat).reduce((s, e) => s + e.amount, 0);
+            const fingerlings = sumCat('Fingerling Cost');
+            const pond = sumCat('Pond Cost');
+            const feed = sumCat('Feed Cost');
+            const totalInput = fingerlings + pond + feed + list.filter(e => e.flow === 'expense' && !['Fingerling Cost', 'Pond Cost', 'Feed Cost'].includes(e.subtype)).reduce((s, e) => s + e.amount, 0);
+            const sales = list.filter(e => e.flow === 'income').reduce((s, e) => s + e.amount, 0);
+            const net = sales - totalInput;
+
+            return `
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-blue-700">Fingerling Cost</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(fingerlings)}</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-indigo-700">Pond Cost</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(pond)}</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-slate-200 card-shadow">
+                        <div class="text-[10px] font-bold text-amber-700">Feed Cost</div>
+                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">${formatINR(feed)}</div>
+                    </div>
+                    <div class="bg-blue-950 text-white rounded-2xl p-3 shadow-sm">
+                        <div class="text-[10px] font-bold text-blue-200">Fish Sales / Net</div>
+                        <div class="text-sm font-extrabold mt-0.5">${formatINR(sales)}</div>
+                        <div class="text-[10px] ${net >= 0 ? 'text-emerald-300' : 'text-rose-300'}">Net: ${net >= 0 ? '+' : '-'}${formatINR(Math.abs(net))}</div>
+                    </div>
+                </div>
+
+                <form id="form-fish" onsubmit="addTransaction(event, 'fish')" class="bg-white rounded-2xl p-4 border border-slate-200 card-shadow space-y-3">
+                    <h2 class="text-sm font-extrabold text-slate-900">Record Fish Farm Cost or Harvest Sale</h2>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Cost / Sale Head *</label>
+                            <select name="subtype" onchange="this.form.flow.value = this.value === 'Fish Harvest Sales' ? 'income' : 'expense'" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-extrabold bg-white">
+                                <option value="Fingerling Cost">Fingerling Cost</option>
+                                <option value="Pond Cost">Pond Cost</option>
+                                <option value="Feed Cost">Feed Cost</option>
+                                <option value="Fish Harvest Sales">Fish Harvest Sales (Income)</option>
+                            </select>
+                            <input type="hidden" name="flow" value="expense">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Date</label>
+                            <input type="date" name="date" value="${todayISO()}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Pond / Species Description *</label>
+                        <input type="text" name="title" placeholder="e.g., Pond 1 Tilapia / Pearl Spot Fingerlings" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Quantity</label>
+                            <input type="number" step="any" name="qty" placeholder="1000" oninput="autoCalcFormAmount('form-fish')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Unit</label>
+                            <select name="unit" class="w-full rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-semibold bg-white">
+                                <option value="Fingerlings">Fingerlings</option>
+                                <option value="Bags">Bags (Feed)</option>
+                                <option value="kg">kg</option>
+                                <option value="Pond">Pond</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Rate (₹)</label>
+                            <input type="number" step="any" name="rate" placeholder="4.5" oninput="autoCalcFormAmount('form-fish')" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Total Amount (₹) *</label>
+                            <input type="number" step="any" name="amount" required placeholder="4500" class="w-full rounded-xl border border-emerald-400 bg-emerald-50/40 px-3 py-2 text-sm font-extrabold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Hatchery / Feed Dealer</label>
+                            <input type="text" name="party" placeholder="Supplier / Buyer" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                    <input type="text" name="notes" placeholder="Species (Karimeen, Tilapia, Rohu), pond notes..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs">
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-extrabold text-xs">
+                        + Save Fish Farm Entry
+                    </button>
+                </form>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 px-1">Fish Farm Ledger (${list.length})</h3>
+                    ${renderEntryList(list)}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 8. MAIN PAGE DISPATCHER & CHART
+        // ==========================================
+        function renderCurrentPage() {
+            const container = document.getElementById('app-content');
+            const pageMeta = PAGES.find(p => p.id === activePage) || PAGES[0];
+
+            let headerBanner = activePage === 'dashboard' ? '' : `
+                <div class="flex items-center justify-between bg-white px-4 py-3 rounded-2xl border border-slate-200 card-shadow">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm">
+                            <i class="fa-solid ${pageMeta.icon}"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-extrabold text-slate-900">${pageMeta.title}</h2>
+                            <p class="text-[11px] text-slate-500">${pageMeta.group} Department Ledger</p>
+                        </div>
+                    </div>
+                    <button onclick="switchPage('dashboard')" class="text-[11px] font-bold text-slate-600 hover:text-emerald-700 bg-slate-100 px-2.5 py-1.5 rounded-xl">
+                        ← Home
+                    </button>
+                </div>
+            `;
+
+            let bodyHTML = '';
+            switch (activePage) {
+                case 'dashboard':
+                    bodyHTML = renderDashboard();
+                    break;
+                case 'coco_buy':
+                    bodyHTML = renderCoconutBuying();
+                    break;
+                case 'coco_sell':
+                    bodyHTML = renderCoconutSelling();
+                    break;
+                case 'copra':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'copra',
+                        formHeading: 'Record Copra Buying or Selling',
+                        subtypes: ['Milling FAQ', 'Rasi', 'Ball Copra'],
+                        units: ['kg', 'Quintal', 'Bags'],
+                        placeholder: 'e.g., Dried Kiln Batch #4 / Mill Delivery'
+                    });
+                    break;
+                case 'oil':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'oil',
+                        formHeading: 'Record Coconut Oil Buying or Selling',
+                        subtypes: ['Pure Filtered Oil', 'Virgin Coconut Oil', 'Expeller Oil', 'Oil Cake (Punnakku)'],
+                        units: ['Liters', 'kg', 'Tins (15kg)', 'Barrels'],
+                        placeholder: 'e.g., Mill Crushing Oil Sale / Retail Tins'
+                    });
+                    break;
+                case 'overheads':
+                    bodyHTML = renderOverheads();
+                    break;
+                case 'jathi_kaya':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'jathi_kaya',
+                        formHeading: 'Record Jathi Kaya (Nutmeg) Buying or Selling',
+                        subtypes: ['Whole Dried Jathi Kaya', 'Raw Jathi Kaya', 'Grade A Nutmeg'],
+                        units: ['kg', 'Bags'],
+                        placeholder: 'e.g., Estate Harvest / Spice Trader Sale'
+                    });
+                    break;
+                case 'flower':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'flower',
+                        formHeading: 'Record Jathi Flower / Mace (1st & 2nd Quality)',
+                        subtypes: ['1st Quality (Red)', '2nd Quality (Yellow)'],
+                        units: ['kg', 'Grams'],
+                        placeholder: 'e.g., 1st Quality Red Mace Lot',
+                        gradeBreakdown: true
+                    });
+                    break;
+                case 'parippu':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'parippu',
+                        formHeading: 'Record Parippu (Nutmeg Kernel) Buying or Selling',
+                        subtypes: ['Whole Parippu (Sound)', 'Broken / Shrivelled Parippu'],
+                        units: ['kg', 'Bags'],
+                        placeholder: 'e.g., Shelled Kernel Lot'
+                    });
+                    break;
+                case 'arecanut':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'arecanut',
+                        formHeading: 'Record Arecanut (Adakka) Buying or Selling',
+                        subtypes: ['Raw', 'Boiled', 'Chali'],
+                        units: ['kg', 'Quintal', 'Bags'],
+                        placeholder: 'e.g., Dried Chali Lot / Mandi Sale'
+                    });
+                    break;
+                case 'pepper':
+                    bodyHTML = renderBuySellModule({
+                        moduleKey: 'pepper',
+                        formHeading: 'Record Pepper (Kurumulaku) Buying or Selling',
+                        subtypes: ['Garbled', 'Ungarbled', 'Green Pepper'],
+                        units: ['kg', 'Quintal', 'Bags'],
+                        placeholder: 'e.g., Estate Dried Pepper Sale'
+                    });
+                    break;
+                case 'dairy':
+                    bodyHTML = renderDairyPage();
+                    break;
+                case 'rice':
+                    bodyHTML = renderRicePage();
+                    break;
+                case 'fish':
+                    bodyHTML = renderFishPage();
+                    break;
+            }
+
+            container.innerHTML = headerBanner + bodyHTML;
+
+            if (activePage === 'dashboard') {
+                renderDashboardChart();
+            }
+        }
+
+        function renderDashboardChart() {
+            const canvas = document.getElementById('dept-chart');
+            if (!canvas || typeof Chart === 'undefined') return;
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            const filtered = getFilteredDashboardEntries();
+            const labels = ['Coconut', 'Copra & Oil', 'Utilities', 'Spices', 'Dairy', 'Rice & Fish'];
+            const groups = [
+                ['coco_buy', 'coco_sell'],
+                ['copra', 'oil'],
+                ['overheads'],
+                ['jathi_kaya', 'flower', 'parippu', 'arecanut', 'pepper'],
+                ['dairy'],
+                ['rice', 'fish']
+            ];
+
+            const inData = groups.map(mods =>
+                filtered.filter(e => mods.includes(e.module) && e.flow === 'income').reduce((s, e) => s + e.amount, 0)
+            );
+            const outData = groups.map(mods =>
+                filtered.filter(e => mods.includes(e.module) && e.flow === 'expense').reduce((s, e) => s + e.amount, 0)
+            );
+
+            trendChart = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Cash-In (Sales)', data: inData, backgroundColor: '#10b981', borderRadius: 6 },
+                        { label: 'Cash-Out (Expenses)', data: outData, backgroundColor: '#f43f5e', borderRadius: 6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11, weight: 'bold' } } }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10, weight: '600' } } },
+                        y: { ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // 9. BACKUP, RESTORE, CSV & STANDALONE EXPORT
+        // ==========================================
+        async function quickDailyBackup() {
+            const payload = {
+                app: 'KrishiLedger Pro',
+                exportedAt: new Date().toISOString(),
+                entries,
+                cows
+            };
+            const jsonStr = JSON.stringify(payload, null, 2);
+            const fileName = `KrishiLedger_Backup_${todayISO()}.json`;
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+
+            if (navigator.canShare && navigator.share) {
+                const file = new File([blob], fileName, { type: 'application/json' });
+                if (navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            title: 'KrishiLedger Daily Backup',
+                            text: `KrishiLedger Backup (${entries.length + cows.length} records) - ${todayISO()}`,
+                            files: [file]
+                        });
+                        showToast('Daily backup shared!');
+                        return;
+                    } catch (err) {}
+                }
+            }
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Backup file downloaded!');
+        }
+
+        function importBackupJSON(e) {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (Array.isArray(data.entries)) {
+                        entries = data.entries;
+                        cows = Array.isArray(data.cows) ? data.cows : cows;
+                        saveEntries();
+                        saveCows();
+                        closeModal('app-link-modal');
+                        renderCurrentPage();
+                        showToast(`Restored ${entries.length + cows.length} records!`);
+                    } else {
+                        showToast('Invalid backup file.', true);
+                    }
+                } catch (err) {
+                    showToast('Could not read backup file.', true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportCSVReport() {
+            const headers = ['Date', 'Module', 'Type', 'SubType', 'Title', 'Qty', 'Unit', 'Rate', 'Amount_INR', 'Party', 'Notes'];
+            const rows = entries.map(e => [
+                e.date, e.module, e.flow, e.subtype, e.title, e.qty, e.unit, e.rate, e.amount, e.party, e.notes
+            ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `KrishiLedger_Report_${todayISO()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('CSV report exported!');
+        }
+
+        function downloadStandaloneApp() {
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'KrishiLedger_Pro.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('KrishiLedger_Pro.html downloaded!');
+        }
+
+        function loadSampleEstateData() {
+            const t = todayISO();
+            entries = [
+                { id: 's1', module: 'coco_buy', flow: 'expense', subtype: 'Cut Coconut', title: 'Morning Split Nuts Lot', qty: 600, unit: 'Nuts', rate: 21, amount: 12600, date: t, party: 'Rajan Farm', notes: 'Good kernel thickness' },
+                { id: 's2', module: 'coco_buy', flow: 'expense', subtype: 'Uncut Coconut', title: 'Whole Coconuts Harvest', qty: 450, unit: 'Nuts', rate: 23, amount: 10350, date: t, party: 'Kuttan', notes: 'Husked' },
+                { id: 's3', module: 'coco_sell', flow: 'income', subtype: 'Whole Coconut Sale', title: 'Wholesale Market Dispatch', qty: 300, unit: 'Nuts', rate: 29, amount: 8700, date: t, party: 'Metro Traders', notes: '' },
+                { id: 's4', module: 'copra', flow: 'income', subtype: 'Milling FAQ', title: 'Kiln Dried Copra Sale', qty: 420, unit: 'kg', rate: 118, amount: 49560, date: t, party: 'Kochi Oil Mill', notes: '6% moisture' },
+                { id: 's5', module: 'oil', flow: 'income', subtype: 'Pure Filtered Oil', title: 'Filtered Oil Sale', qty: 120, unit: 'Liters', rate: 215, amount: 25800, date: t, party: 'Local Supermart', notes: '' },
+                { id: 's6', module: 'overheads', flow: 'expense', subtype: 'Labour', title: '3 Drying & Splitting Workers', qty: 3, unit: 'Workers', rate: 850, amount: 2550, date: t, party: 'Babu & Team', notes: '' },
+                { id: 's7', module: 'overheads', flow: 'expense', subtype: 'Firewood (Copra Drying)', title: 'Rubber Wood Load for Kiln', qty: 1, unit: 'Loads', rate: 3200, amount: 3200, date: t, party: 'Sawmill', notes: 'Dry firewood' },
+                { id: 's8', module: 'overheads', flow: 'expense', subtype: 'Electricity - Dryer', title: 'Copra Dryer Meter Bill', qty: 1, unit: 'Bill', rate: 2850, amount: 2850, date: t, party: 'KSEB Commercial', notes: 'Separate dryer meter' },
+                { id: 's9', module: 'overheads', flow: 'expense', subtype: 'Electricity - House', title: 'House Meter Monthly Bill', qty: 1, unit: 'Bill', rate: 1420, amount: 1420, date: t, party: 'KSEB Domestic', notes: 'Separate house meter' },
+                { id: 's10', module: 'jathi_kaya', flow: 'income', subtype: 'Whole Dried Jathi Kaya', title: 'Dried Nutmeg Sale', qty: 45, unit: 'kg', rate: 340, amount: 15300, date: t, party: 'Spice Mandi', notes: '' },
+                { id: 's11', module: 'flower', flow: 'income', subtype: '1st Quality (Red)', title: '1st Quality Mace Lot', qty: 8, unit: 'kg', rate: 1650, amount: 13200, date: t, party: 'Hill Spices', notes: 'Bright red' },
+                { id: 's12', module: 'flower', flow: 'expense', subtype: '2nd Quality (Yellow)', title: '2nd Quality Flower Purchase', qty: 6, unit: 'kg', rate: 980, amount: 5880, date: t, party: 'Local Grower', notes: '' },
+                { id: 's13', module: 'parippu', flow: 'income', subtype: 'Whole Parippu (Sound)', title: 'Nutmeg Kernel Sale', qty: 30, unit: 'kg', rate: 560, amount: 16800, date: t, party: 'Aluva Exporter', notes: '' },
+                { id: 's14', module: 'arecanut', flow: 'income', subtype: 'Chali', title: 'Chali Arecanut Sale', qty: 110, unit: 'kg', rate: 390, amount: 42900, date: t, party: 'Arecanut Co-op', notes: '' },
+                { id: 's15', module: 'pepper', flow: 'income', subtype: 'Garbled', title: 'Black Pepper Sale', qty: 55, unit: 'kg', rate: 640, amount: 35200, date: t, party: 'Spice Board Dealer', notes: '' },
+                { id: 's16', module: 'dairy', flow: 'income', subtype: 'Milk Sale', title: 'Morning & Evening Milk', qty: 28, unit: 'Liters', rate: 46, amount: 1288, date: t, party: 'Milk Society', notes: '' },
+                { id: 's17', module: 'dairy', flow: 'income', subtype: 'Cow Dung Sale', title: 'Dried Cow Dung Load', qty: 1, unit: 'Tractor Loads', rate: 3000, amount: 3000, date: t, party: 'Plantation Buyer', notes: '' },
+                { id: 's18', module: 'rice', flow: 'expense', subtype: 'Tractor / Tiller Cost', title: '2.5 Acres Paddy Ploughing', qty: 4, unit: 'Hours', rate: 1100, amount: 4400, date: t, party: 'Saji Tractor', notes: '2.5 Acres East Field' },
+                { id: 's19', module: 'fish', flow: 'expense', subtype: 'Fingerling Cost', title: 'Pearl Spot & Tilapia Seed', qty: 800, unit: 'Fingerlings', rate: 5, amount: 4000, date: t, party: 'Govt Hatchery', notes: 'Pond #1' }
+            ];
+            cows = [
+                { id: 'cow1', name: 'Lakshmi (#01)', breed: 'HF Cross', status: 'Pregnant & Milking', aiDate: '2026-08-15', milkStart: '2026-04-10', avgYield: 16, notes: 'Healthy, 2nd lactation' },
+                { id: 'cow2', name: 'Gouri (#02)', breed: 'Jersey Cross', status: 'Milking', aiDate: '', milkStart: '2026-09-01', avgYield: 12, notes: 'High butterfat' }
+            ];
+            saveEntries();
+            saveCows();
+            renderCurrentPage();
+            showToast('Sample estate data loaded!');
+        }
+
+        // ==========================================
+        // 10. INITIALIZATION
+        // ==========================================
+        window.onload = function () {
+            requestPersistentStorage();
+            loadData();
+            renderNavBar();
+            renderCurrentPage();
+        };
+    </script>
+</body>
+</html>
